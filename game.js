@@ -61,6 +61,12 @@ var fuelCost = 100;
 var autoMinerLevel = 0;
 var autoMinerCost = 150;
 var currentPlanet = "Moon";
+var totalMined = 0;
+var totalMoneyEarned = 0;
+var miningClicks = 0;
+var missionOneDone = false;
+var missionTwoDone = false;
+var missionThreeDone = false;
 var planets = {
   Moon: {
     name: "Moon Base",
@@ -192,6 +198,9 @@ function updateScreen() {
   fuelCostText.innerText = fuelCost;
   autoMinerLevelText.innerText = autoMinerLevel;
   autoMinerCostText.innerText = autoMinerCost;
+
+
+  updateMissions();
 }
 
 function addLog(text) {
@@ -439,6 +448,52 @@ function resetGame() {
   showMessage("Game reset.");
   updateScreen();
 }
+
+function updateMissions() {
+    var missionsOne = document.getElementById("missionOne");
+    var missionTwo = document.getElementById("missionTwo");
+    var missionThree = document.getElementById("missionThree");
+    
+    if (iron >= 20 && !missionOneDone) {
+        missionOneDone = true;
+        money = money + 50;
+        showMessage("Mission complete: Mine 20 iron. Reward: 50 money.");
+
+    }
+
+    if (totalMoneyEarned >= 100 & !missionTwoDone) {
+        missionTwoDone = true;
+        money = money + 75;
+        showMessage("Mission complete: Earn 100 moeny. Reward: 75 money.");
+
+
+    }
+
+    if (drillLevel >= 2 && !missionThreeDone) {
+        missionThreeDone = true;
+        money = money + 100;
+        showMessage("Mission complete: Upgrade drill to level 2. Reward: 100 money.");
+
+
+    }
+
+    if (missionOneDone) {
+        missionOneDone.innerText = "Complete: Mine 20 iron";
+        missionOneDone.style.color = "#90be6d";
+
+    }
+
+    if (missionTwoDone) {
+    missionTwo.innerText = "Completed: Earn 100 money";
+    missionTwo.style.color = "#90be6d";
+  }
+
+  if (missionThreeDone) {
+    missionThree.innerText = "Completed: Upgrade drill to level 2";
+    missionThree.style.color = "#90be6d";
+  }
+}
+
 
 mineBtn.onclick = function () {
   minePlanet();
