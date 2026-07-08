@@ -240,6 +240,12 @@ function minePlanet() {
     heat = maxHeat;
   }
 
+  miningClicks++;
+  if (miningClicks % 8 === 0) {
+    randomMiningEvent();
+
+  }
+
   var randomNumber = Math.floor(Math.random() * 100) + 1;
   var amount = drillPower;
 
@@ -263,6 +269,60 @@ function minePlanet() {
   updateScreen();
 }
 
+function randomMiningEvent() {
+    var eventNumber = Math.floor(Math.random() * 5) + 1;
+
+    if (eventNumber === 1) {
+        var bonusIron = 5;
+        iron = iron + bonusIron;
+        storageCurrent = storageCurrent + bonusIron;
+        showMessage("Random events: Rich iron vein found. Bonus iron gained.");
+
+    }
+
+    if (eventNumber === 2) {
+        var bonusCrystal = 3;
+        crystal = crystal + bonusCrystal;
+        showMessage("Random event: crystal pocket discovered.");
+
+    }
+
+    if (eventNumber === 3) {
+        fuel = fuel - 10;
+
+        if (fuel < 0) {
+            fuel = 0;
+        }
+
+        showMessage("RandomEvent: Fuel leak! lost 10 fuel");
+
+    }
+
+    if (eventNumber === 4) {
+        heat = heat + 15;
+
+        if (heat > maxHeat) {
+            heat = maxHeat;
+
+        }
+
+        showMessage("Random event: solar flare increased machine heat");
+
+    }
+
+    if (eventNumber === 5) {
+        money = money + 25;
+        totalMoneyEarned = totalMoneyEarned + 25;
+        showMessage("Random event: found abondoned space coins. Gained 25 money.");
+
+    }
+
+    if (storageCurrent > storageMax) {
+        storageCurrent = storageMax;
+
+    }
+}
+
 function sellResources() {
   if (iron === 0 && crystal === 0 && gold === 0) {
     showMessage("No resources to sell.");
@@ -272,6 +332,7 @@ function sellResources() {
   var earnedMoney = iron * 2 + crystal * 5 + gold * 12;
 
   money = money + earnedMoney;
+  totalMoneyEarned = totalMoneyEarned + earnedMoney;
 
   iron = 0;
   crystal = 0;
@@ -297,6 +358,29 @@ function coolMachine() {
 
   showMessage("Machine cooled down.");
 
+  updateScreen();
+}
+
+function autoMineTick() {
+  if (autoMinerLevel <= 0) {
+    return;
+  }
+
+  if (storageCurrent >= storageMax) {
+    return;
+  }
+
+  var amount = autoMinerLevel;
+
+  iron = iron + amount;
+  storageCurrent = storageCurrent + amount;
+  totalMined = totalMined + amount;
+
+  if (storageCurrent > storageMax) {
+    storageCurrent = storageMax;
+  }
+
+  addLog("Auto miner collected " + amount + " iron.");
   updateScreen();
 }
 
@@ -403,12 +487,92 @@ function changePlanet(planetNameValue) {
 }
 
 function saveGame() {
-  showMessage("Save system will be added in the next phase.");
+  var saveData = {
+    money: money,
+    iron: iron,
+    crystal: crystal,
+    gold: gold,
+    fuel: fuel,
+    storageCurrent: storageCurrent,
+    storageMax: storageMax,
+    heat: heat,
+    drillLevel: drillLevel,
+    drillPower: drillPower,
+    drillCost: drillCost,
+    storageLevel: storageLevel,
+    storageCost: storageCost,
+    fuelLevel: fuelLevel,
+    fuelMax: fuelMax,
+    fuelCost: fuelCost,
+    autoMinerLevel: autoMinerLevel,
+    autoMinerCost: autoMinerCost,
+    currentPlanet: currentPlanet,
+    totalMined: totalMined,
+    totalMoneyEarned: totalMoneyEarned,
+    miningClicks: miningClicks,
+    missionOneDone: missionOneDone,
+    missionTwoDone: missionTwoDone,
+    missionThreeDone: missionThreeDone
+  };
+
+  localStorage.setItem("cosmocraftSave", JSON.stringify(saveData));
+
+  showMessage("Game saved successfully.");
 }
 
+
 function loadGame() {
-  showMessage("Load system will be added in the next phase.");
+  var savedGame = localStorage.getItem("cosmocraftSave");
+
+  if (savedGame === null) {
+    showMessage("No saved game found.");
+    return;
+  }
+
+  var saveData = JSON.parse(savedGame);
+
+  money = saveData.money;
+  iron = saveData.iron;
+  crystal = saveData.crystal;
+  gold = saveData.gold;
+  fuel = saveData.fuel;
+  storageCurrent = saveData.storageCurrent;
+  storageMax = saveData.storageMax;
+  heat = saveData.heat;
+  drillLevel = saveData.drillLevel;
+  drillPower = saveData.drillPower;
+  drillCost = saveData.drillCost;
+  storageLevel = saveData.storageLevel;
+  storageCost = saveData.storageCost;
+  fuelLevel = saveData.fuelLevel;
+  fuelMax = saveData.fuelMax;
+  fuelCost = saveData.fuelCost;
+
+  autoMinerLevel = saveData.autoMinerLevel;
+  autoMinerCost = saveData.autoMinerCost;
+  currentPlanet = saveData.currentPlanet;
+
+
+
+
+
+
+
+
+
+  totalMined = saveData.totalMined;
+  totalMoneyEarned = saveData.totalMoneyEarned;
+  miningClicks = saveData.miningClicks;
+  missionOneDone = saveData.missionOneDone;
+  missionTwoDone = saveData.missionTwoDone;
+  missionThreeDone = saveData.missionThreeDone;
+
+  changePlanet(currentPlanet);
+
+  showMessage("Saved game loaded.");
+  updateScreen();
 }
+
 
 function resetGame() {
   money = 0;
@@ -427,21 +591,18 @@ function resetGame() {
   fuelLevel = 1;
   fuelMax = 100;
   fuelCost = 100;
-
-
-
-
-
-
-
-
-
-
-
   autoMinerLevel = 0;
-  autoMinerCost = 150;
-
+  autoMinerCost = 150
   currentPlanet = "Moon";
+  totalMined = 0;
+  totalMoneyEarned = 0;
+  miningClicks = 0;
+  missionOneDone = false;
+  missionTwoDone = false;
+  missionThreeDone = false;
+
+  localStorage.removeItem("cosmocraftSave");
+  
 
   changePlanet("Moon");
 
@@ -557,3 +718,5 @@ resetBtn.onclick = function () {
 
 updateScreen();
 addLog("CosmoCraft system started.");
+
+setInterval(autoMineTick, 3000);
