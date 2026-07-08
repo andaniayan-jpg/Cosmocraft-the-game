@@ -1,0 +1,172 @@
+<!doctype html>
+<html>
+<body>
+    <header id="mainHeader">
+        <h1>CosmoCraft</h1>
+        <p>Planet miner tycoon</p>
+
+    </header>
+
+    <main id="gameContainer">
+
+        <section id="planetSection">
+            <h2 id="planetName">Moon Base</h2>
+            <p id="planetDescription">
+                A calm starting planet with basic iron and small crystal deposits.
+            </p>
+
+            <div id="planetView">
+                <div id="planetCircle"></div>
+                <p id="planetStatus">Current Planet: Moon</p>
+
+            </div>
+        </section>
+
+        <section id="resourcePanel">
+            <h2>Resources</h2>
+
+            <div class="resourceRow">
+                <span>Money:</span>
+                <b id="moneyText">0</b>
+
+            </div>
+
+            <div class="resourceRow">
+                <span>Iron:</span>
+                <b id="ironText">0</b>
+
+            </div>
+
+            <div class="resourceRow">
+                <span>Crystals:</span>
+                <b id="crystalText">0</b>
+            </div>
+
+
+            <div class="resourceRow">
+                <span>Gold:</span>
+                <b id="goldText">0</b>
+            </div>
+
+            <div class="resourceRow">
+                <span>Fuel:</span>
+                <b id="fuelText">100</b>
+            </div>
+
+            <div class="resourceRow">
+                <span>Storage:</span>
+                <b id="storageText">0 / 100</b>
+
+            </div>
+
+
+
+        </section>
+
+        <section id="actionPanel">
+            <h2>Mining Controls</h2>
+
+            <button id="mineBtn">Mine Planet</button>
+            <button id="sellBtn">Sell Resources</button>
+            <button id="collBtn"Cool Machine>Cool machine</button>
+            <button id="refuelBtn">Refuel</button>"
+
+            <p id="messageText">
+                Welcome to CosmoCraft. Start mining to collect resources. 
+
+            </p>
+        </section>
+
+        <section id="upgradePanel">
+            <h2>UpgradeShop</h2>
+
+            <div class="upgradeBox">
+                <h3>Drill Power</h3>
+                <p>Level: <b id="drilllevelText">1</b></p>
+                <p>Cost: <b id="drillCostText">50</b></p>
+                <button id="upgradeBrillBtn">Upgrade Drill</button>
+
+            </div>
+
+            <div class="upgradeBox">
+                <h3>Storage</h3>
+                <p>Level: <b id="storageLevelText">1</b></p>
+                <p>Cost: <b id="storageCostText">75</b></p>
+                <button id="upgradeStorageBtn">Upgrade Storage</button>
+
+            </div>
+
+            <div class="upgradeBox">
+                <h3>Fuel Tank</h3>
+                <p>Level: <b id="fuellevelText">1</b></p>
+                <P>Cost: <b id="fuelCostText">100</b></P>
+                <button id="upgradeFuelBtn">Upgrade Fuel Tank</button>
+
+
+            </div>
+
+            <div class="upgradeBox">
+                <h3>Auto Miner</h3>
+                <p>Level: <b id="autoMinerLevelText">0</b></p>
+                <p>Cost: <b id="autoMinerCostText">150</b></p>
+                <button id="upgradeAutoMinerBtn">Buy Auto Miner</button>
+
+            </div>
+
+
+
+        </section>
+
+        <section id="planetPanel">
+            <h2>Planets</h2>
+
+            <button id="moonBtn">Moon</button>
+            <button id="marsBtn">Mars</button>
+            <button id="europaBtn">Europa</button>
+            <button id="titleBtn">Titan</button>
+
+        </section>
+
+        <section id="missionPanel">
+            <h2>Missions</h2>
+
+            <ul id="missionList">
+                <li id="missionOne">Mine 20 iron</li>
+                <li id="missionTwo">Earn 100 money</li>
+                <li id="missionThree">Upgrade drill to level 2</li>
+
+            </ul>
+
+        </section>
+
+        <section id="savePanel">
+            <h2>Save Progress</h2>
+
+            <button id="saveBtn">Save Game</button>
+            <button id="loadBtn">Load Game</button>
+            <button id="resetBtn">Reset Game</button>
+
+        </section>
+
+        <section id="logPanel">
+            <h2>Mining Log</h2>
+            <div id="logBox">
+                <p>System ready. Waiting for mining command...</p>
+            </div>
+        </section>
+
+
+
+
+
+    </main>
+
+    <footer id="footer">
+        <p>CosmoCraft: PLanet miner tycoon</p>
+        <p>Built with HTML, CSS, and jawascript</p>
+
+    </footer>
+
+    <script src="game.js"></script>
+</body>
+</html>
