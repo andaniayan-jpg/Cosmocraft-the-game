@@ -1,0 +1,214 @@
+body {
+    margin: 0;
+    background: #050514;
+    color: white;
+    font-family: Arial, sans-serif;
+
+}
+
+#mainHeader {
+    text-align: center;
+    padding: 25px 10px;
+    background: #090925;
+    border-bottom: 2px solid #2f6bff;
+
+}
+
+#mainHeader h1 {
+    margin: 0;
+    font-size: 42px;
+    letter-spacing: 2px;
+
+}
+
+#mainHeader p {
+    margin-top: 8px;
+    color: #b8c7ff;
+    font-size: 18px;
+
+}
+
+#gameContainer {
+    width: 95%;
+    max-width: 1200px;
+    margin: 25px auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+
+
+}
+
+section h2 {
+    margin-top: 0;
+    color: #8fb3ff;
+
+}
+
+#planetSection {
+    grid-column: span 2;
+    text-align: center;
+
+}
+
+#planetView {
+    margin-top: 20px;
+
+}
+
+#planetCircle {
+    width: 180px;
+    height: 180px;
+    margin: 0 auto;
+    border-radius: 50%;
+    background: radialgradient(circle at 30% 30%, #d4d4d4, #555577, #181830);
+    box-shadow: 0 0 35px rgba(180, 200, 255, 0.5);
+
+
+}
+
+
+
+#planetStatus {
+    margin-top: 15px;
+    color: #d4ddff;
+
+
+}
+
+.resourceRow {
+    display: flex;
+    justify-content: space-between;
+    background: #17173a;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 8px;
+
+}
+
+.resourceRow b {
+    color: #ffd166;
+}
+
+button {
+    padding: 10px 14px;
+    margin: 6px;
+    border: 2px solid #7aa2ff;
+    background: #15154a;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+
+}
+
+
+button:hover {
+    background: #263399;
+
+}
+
+#mineBtn {
+    background: #31572c;
+    border-color: #90be6d;
+
+}
+
+#sellBtn {
+    background: #7f4f24;
+    border-color: #f4a261;
+
+}
+
+#collBtn {
+    background: #023e8a;
+    border-color: #48cae4;
+
+}
+
+#messageText {
+    marginText {
+        margin-top: 15px;
+        padding: 12px;
+        background: #07071c;
+        border-left: 4px solid #8fb3ff;
+        color: #d6ddff;
+
+    }
+}
+
+.upgradeBox {
+    background: #17173a;
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    border: 1px solid #34348a;
+
+
+}
+
+.upgradeBox h3 {
+    margin-top: 0;
+    color: #ffd166;
+
+}
+
+#planetPanel button {
+    min-width: 100px;
+
+}
+
+#missionList {
+    padding-left: 20px;
+
+}
+
+#savePanel {
+    text-align: center;
+
+}
+
+#logBox {
+    height: 150px;
+    overflow-y: auto;
+    background: #060618;
+    border-radius: 8px;
+    border: 1px solid #333366;
+
+
+}
+
+
+
+#logBox p {
+    margin: 6px 0;
+    color: #c8d3ff;
+
+}
+
+#footer {
+    text-align: center;
+    padding: 20px;
+    background: #090925;
+    color: #aebcff;
+    margin-top: 30px;
+
+
+}
+
+@media screen and (max-width: 800px) {
+    #gameContainer {
+        grid-template-columns: 1fr;
+    }
+
+    #planetSection {
+        grid-column: span 1;
+
+    }
+
+    #mainHeader h1 {
+        font-size: 32px;
+    }
+    
+}
+
