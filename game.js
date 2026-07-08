@@ -123,5 +123,187 @@ var planets = {
 function updateScreen() {
     moneyText.innerText = money;
     ironText.innerText = iron;
+    crystalText.innerText = crystal;
+    goldText.innerText = gold;
+    fuelText.innerText = fuel + " / " + fuelMax;
+    storageText.innerText = storageCurrent + " / " + storageMax;
+    heatText.innerText = heat + " / " + maxHeat;
+    drillLevelText.innerText = drillLevel;
+    drillCostText.innerText = drillCost;
+
+    fuelLevelText.innerText = fuelLevel;
+    fuelCostText.innerText = fuelCost;
+
+    autoMinerLevelText.innerText = autoMinerLevel;
+    autoMinerCostText.innerText = autoMinerCost;
+
 
 }
+
+function addLog(text) {
+    var newLine = document.createElement("p");
+    newLine.innerText = text;
+
+    logBox.prepend(newLine); 
+}
+
+function showMessage(text) {
+    messageText.innerText = text;
+    addLog(text);
+
+}
+
+function minePlanet() {
+    var planet = planets[currentPlanet];
+
+}
+
+
+if (fuel < planet.fuelUse) {
+    showMessage("Not enough fuel. Refuel before mining again");
+    return;
+
+}
+
+if (storageCurrent >= storageMax) {
+    showMessage("Storage is full. Sell resources first.");
+    return;
+
+}
+
+fuel = fuel - planet.fuelUse;
+heat = heat + planet.heatGain;
+
+if (heat > maxHeat) {
+    heat = maxHeat;
+
+}
+
+var randomNumber = Math.floor(Math.random() * 100) + 1;
+var amount = drillPower;
+
+
+if (randomNumber <= planet.ironChance) {
+    iron = iron + amount;
+    showMessage("Mined " + amount + " iron from " + currentPlanet + ".");
+  } else if (randomNumber <= planet.ironChance + planet.crystalChance) {
+    crystal = crystal + amount;
+    showMessage("Mined " + amount + " crystal from " + currentPlanet + ".");
+  } else {
+    gold = gold + amount;
+    showMessage("Mined " + amount + " gold from " + currentPlanet + ".");
+  }
+
+  storageCurrent = storageCurrent + amount;
+   if (storageCurrent > storageMax) {
+    storageCurrent = storageMax;
+
+   }
+
+   updateScreen();
+
+}
+
+function sellResources() {
+    if (iron === 0 && crystal === 0 && gold === 0) {
+        showMessage("No resources to sell.");
+        return;
+
+    }
+
+
+    var earnMoney = iron * 2 + crystal * 5 + gold * gold * 12;
+    
+
+    money = money + earnedMoney;
+
+    iron = 0;
+    crystal = 0;
+    gold = 0;
+    storageCurrent = 0;
+
+    showMessage("Sold resources and earned " + earnedMoney + " money.");
+
+    updateScreen();
+
+}
+
+function coolMachine() {
+    if (heat === 0) {
+        showMessage("Machine is already cool.");
+        return;
+
+    }
+
+    heat = heat -25;
+    
+    if (heat < 0) {
+        heat = 0;
+
+    }
+
+    showMessage("Machine colled down.");
+
+    updateScreen();
+
+}
+
+function refuelMachine() {
+    if (fuel >= fuelMax) {
+        showMessage("Fuel tank is already full.");
+        return;
+
+    }
+
+    money = money - 20;
+    fuel = fuelMax;
+
+}
+
+showMessage("Fuel refilled.");
+
+updateScreen();
+
+}
+
+function upgrasdeDrill() {
+    if (money < drillCost) {
+        showMessage("Not enough money to upgrade drill.");
+        return;
+
+    }
+
+    money = money - drillCost;
+    drillLevel++;
+    drillPower++;
+    drillCost = drillCost + 50;
+
+    showMessage("Drill upgrade to level " + drillLevel + ".");
+
+    updateScreen();
+
+}
+
+function upgradeStorage() {
+    if (money < storageCost) {
+        showMessage("Not enough money to upgrade storage.");
+        return;
+
+    }
+
+    money = money - storageCost;
+    storageLevel++;
+    storageMax = storageMax + 50;
+    storageCost = storageCost + 75;
+
+    showMessage("Storage upgraded to level " + storageLevel + ".");
+
+    updateScreen();
+
+}
+
+function upgradeFuelTank() {
+    
+}
+
+
