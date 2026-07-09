@@ -1,214 +1,174 @@
-body {
+* {
     margin: 0;
-    background: #050514;
-    color: white;
-    font-family: Arial, sans-serif;
-
+    padding: 0;
+    box-sizing: border-box;
 }
 
-#mainHeader {
-    text-align: center;
-    padding: 25px 10px;
-    background: #090925;
-    border-bottom: 2px solid #2f6bff;
-
-}
-
-#mainHeader h1 {
-    margin: 0;
-    font-size: 42px;
-    letter-spacing: 2px;
-
-}
-
-#mainHeader p {
-    margin-top: 8px;
-    color: #b8c7ff;
-    font-size: 18px;
-
-}
-
-#gameContainer {
-    width: 95%;
-    max-width: 1200px;
-    margin: 25px auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
 
 
 }
 
-section h2 {
-    margin-top: 0;
-    color: #8fb3ff;
+#game-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100w;
+    height: 100vh;
+    display: block;
+    outline: none;
 
 }
 
-#planetSection {
-    grid-column: span 2;
-    text-align: center;
-
-}
-
-#planetView {
-    margin-top: 20px;
-
-}
-
-#planetCircle {
-    width: 180px;
-    height: 180px;
-    margin: 0 auto;
-    border-radius: 50%;
-    background: radialgradient(circle at 30% 30%, #d4d4d4, #555577, #181830);
-    box-shadow: 0 0 35px rgba(180, 200, 255, 0.5);
-
-
-}
-
-
-
-#planetStatus {
-    margin-top: 15px;
-    color: #d4ddff;
-
-
-}
-
-.resourceRow {
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100;
+    background: radial-gradient(circle at center, #0a0e1a 0%, #000000 100%);
     display: flex;
-    justify-content: space-between;
-    background: #17173a;
-    padding: 10px;
-    margin: 8px 0;
-    border-radius: 8px;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    transition: opacity 0.8s ease;
 
 }
 
-.resourceRow b {
-    color: #ffd166;
-}
-
-button {
-    padding: 10px 14px;
-    margin: 6px;
-    border: 2px solid #7aa2ff;
-    background: #15154a;
-    color: white;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 15px;
+#loading-scree.hidden {
+    opacity: 0;
+    pointer-events: none;
 
 }
 
-
-button:hover {
-    background: #263399;
-
-}
-
-#mineBtn {
-    background: #31572c;
-    border-color: #90be6d;
-
-}
-
-#sellBtn {
-    background: #7f4f24;
-    border-color: #f4a261;
-
-}
-
-#collBtn {
-    background: #023e8a;
-    border-color: #48cae4;
-
-}
-
-#messageText {
-    marginText {
-        margin-top: 15px;
-        padding: 12px;
-        background: #07071c;
-        border-left: 4px solid #8fb3ff;
-        color: #d6ddff;
-
-    }
-}
-
-.upgradeBox {
-    background: #17173a;
-    padding: 12px;
-    margin-bottom: 12px;
-    border-radius: 10px;
-    border: 1px solid #34348a;
-
-
-}
-
-.upgradeBox h3 {
-    margin-top: 0;
-    color: #ffd166;
-
-}
-
-#planetPanel button {
-    min-width: 100px;
-
-}
-
-#missionList {
-    padding-left: 20px;
-
-}
-
-#savePanel {
+.loading-content {
     text-align: center;
-
-}
-
-#logBox {
-    height: 150px;
-    overflow-y: auto;
-    background: #060618;
-    border-radius: 8px;
-    border: 1px solid #333366;
-
-
+    color: #e8f0ff;
 }
 
 
+.loading-content h1 {
+    font-size: 3rem;
+    letter-spacing: 0.6rem;
+    font-weight: 300;
+    margin-bottom: 2rem;
+    color: #7fd6ff;
+    text-shadow: 0 0 20px rgba(127, 214, 255, 0.6);
 
-#logBox p {
-    margin: 6px 0;
-    color: #c8d3ff;
-
-}
-
-#footer {
-    text-align: center;
-    padding: 20px;
-    background: #090925;
-    color: #aebcff;
-    margin-top: 30px;
 
 
 }
 
-@media screen and (max-width: 800px) {
-    #gameContainer {
-        grid-template-columns: 1fr;
-    }
+.loading-bar-track {
+    width: 320px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.15);
+    overflow: hidden;
+    margin: 0 auto;
 
-    #planetSection {
-        grid-column: span 1;
+}
 
-    }
+#loading-text {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    color: #8fa4c0;
+    letter-spacing: 0.1rem;
 
-    #mainHeader h1 {
-        font-size: 32px;
-    }
+}
+
+
+#hud {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+
+
+
+}
+
+#crosshair {
+    position: absolute;
+    top: 50%;
+    left: 50;
+    width: 6px;
+    height: 6px;
+    margin: -3px 0 0 -3px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
+
+}
+
+
+#interaction-prompt {
+    position: absolute;
+    bottom: 14%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.6rem 1.4rem;
+    background: rgba(10, 14, 26, 0.75);
+    border: 1px solid rgba(127, 214, 255, 0.4);
+    border-radius: 6px;
+    color: #e8f0ff;
+    font-size: 0.95rem;
+    letter-spacing: 0.03rem;
+    backdrop-filter: blur(4px);
+    transition: opacity 0.2s ease;
+
+}
+
+
+#interaction-prompt.hidden {
+    opacity: 0;
+
+}
+
+
+#fuel-gauge {
+    position: absolute;
+    bottom: 6%;
+    left: 4%;
+    width: 220px;
+    transition: opacity 0.3s ease;
     
 }
 
+#fuel-gauge.hidden {
+    opacity: 0;
+
+}
+
+#fuel-gauge-label {
+    color: #8fa4c0;
+    font-size: 0.75rem;
+    letter-spacing: 0.1rem;
+    margin-bottom: 0.3rem;
+
+}
+
+
+#fuel-gauge-track {
+    width: 100px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    overflow: hidden;
+
+}
+
+#fuel-gauge-fill {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, #ff8a3d, #ffd23d);
+    transition: width 0.2s ease, background 0.3s ease;
+    
+}
