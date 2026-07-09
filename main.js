@@ -1,13 +1,12 @@
-import * as THREE from 'theree';
+import * as THREE from 'three';
 
 class InputManager {
-  constructor(doneElement) {
+  constructor(domElement) {
     this.domElement = domElement;
 
+    this.keysDown = new Set();
 
-    this.keyDown = new Set();
-
-    this.keyJustPressed = new Set();
+    this.keysJustPressed = new Set();
 
     this.mouseDeltaX = 0;
     this.mouseDeltaY = 0;
@@ -15,10 +14,6 @@ class InputManager {
     this.isPointerLocked = false;
 
     this._bindEvents();
-
-
-
-
   }
 
   _bindEvents() {
@@ -28,49 +23,41 @@ class InputManager {
         this.keysJustPressed.add(e.code);
       }
       this.keysDown.add(e.code);
-
     });
 
     window.addEventListener('keyup', (e) => {
-      this.keysDown.add(e.code);
-
+      this.keysDown.delete(e.code);
     });
 
     this.domElement.addEventListener('click', () => {
       if (!this.isPointerLocked) {
         this.domElement.requestPointerLock();
-
       }
     });
 
-    document.addEventsListener('pointerlockchange', () => {
+    document.addEventListener('pointerlockchange', () => {
       this.isPointerLocked = document.pointerLockElement === this.domElement;
-
     });
 
     document.addEventListener('mousemove', (e) => {
       if (!this.isPointerLocked) return;
       this.mouseDeltaX += e.movementX;
-      this.mouseDeltaY += e.movementX;
-
+      this.mouseDeltaY += e.movementY;
     });
 
     this.domElement.addEventListener('contextmenu', (e) => e.preventDefault());
-
   }
 
   isKeyDown(code) {
     return this.keysDown.has(code);
-
   }
 
   wasKeyJustPressed(code) {
-    return this.keyJustPressed.has(code);
-
+    return this.keysJustPressed.has(code);
   }
 
   endFrame() {
-    this.keysJustPressed.clear(); 
+    this.keysJustPressed.clear();
   }
 
   consumeMouseDelta() {
@@ -78,45 +65,35 @@ class InputManager {
     this.mouseDeltaX = 0;
     this.mouseDeltaY = 0;
     return delta;
-
   }
-
-
-
-
-
 }
 
 const PLANETS = [
-  { 
+  {
     id: 'earth',
     name: 'Earth',
-   position: { x: 0, z: 0 },
-   groundRadius: 200,
-   terrainType: 'rolling',
-   terrainColor: 'rolling',
-   rockColor: 0x6b6b6b,
-   skyColor: 0x8fc7ff,
-   fogColor: 0x8fc7ff,
-   fogNear:  60,
-   fogFar: 220,
-   gravity: -18,
-   amplitude: 1,
-   resources: [
-   { name: 'Iron', color: 0x8a7a6b },
-   { name: 'Copper', color: 0xc06a3c },
-
-
-  ],
-  
-
+    position: { x: 0, z: 0 },
+    groundRadius: 200,
+    terrainType: 'rolling',
+    terrainColor: 0x4c7a3d,
+    rockColor: 0x6b6b6b,
+    skyColor: 0x8fc7ff,
+    fogColor: 0x8fc7ff,
+    fogNear: 60,
+    fogFar: 220,
+    gravity: -18,
+    amplitude: 1,
+    resources: [
+      { name: 'Iron', color: 0x8a7a6b },
+      { name: 'Copper', color: 0xc06a3c },
+    ],
   },
   {
     id: 'moon',
     name: 'Moon',
     position: { x: 300, z: 150 },
     groundRadius: 150,
-    terrainType: 'created',
+    terrainType: 'cratered',
     terrainColor: 0xb9b9b9,
     rockColor: 0x9a9a9a,
     skyColor: 0x05060a,
@@ -129,7 +106,6 @@ const PLANETS = [
       { name: 'Titanium', color: 0xaeb4bd },
       { name: 'Iron', color: 0x8a7a6b },
     ],
-
   },
   {
     id: 'mars',
@@ -142,19 +118,17 @@ const PLANETS = [
     skyColor: 0xd98a56,
     fogColor: 0xd98a56,
     fogNear: 90,
-    forFar: 260,
+    fogFar: 260,
     gravity: -6.8,
     amplitude: 0.7,
-    resource: [
+    resources: [
       { name: 'Iron', color: 0x8a7a6b },
       { name: 'Crystal', color: 0xd66bff },
-
     ],
-
   },
   {
     id: 'asteroid-belt',
-    name: 'Mars',
+    name: 'Asteroid Belt',
     position: { x: 1500, z: 300 },
     groundRadius: 160,
     terrainType: 'field',
@@ -168,15 +142,13 @@ const PLANETS = [
     amplitude: 2.4,
     resources: [
       { name: 'Gold', color: 0xe0b23c },
-      { name: 'uranium', color: 0x8fff6b },
-      
+      { name: 'Uranium', color: 0x8fff6b },
     ],
-    
   },
   {
     id: 'jupiter-orbit',
-    name: 'jupiter Orbit',
-    position: { x: 220, z: -300 },
+    name: 'Jupiter Orbit',
+    position: { x: 2200, z: -300 },
     groundRadius: 55,
     terrainType: 'platform',
     terrainColor: 0x445566,
@@ -192,10 +164,9 @@ const PLANETS = [
       { name: 'Crystal', color: 0xd66bff },
       { name: 'Uranium', color: 0x8fff6b },
     ],
-
   },
   {
-    id: 'europe',
+    id: 'europa',
     name: 'Europa',
     position: { x: 2450, z: -100 },
     groundRadius: 95,
@@ -211,7 +182,6 @@ const PLANETS = [
     resources: [
       { name: 'Crystal', color: 0xd66bff },
       { name: 'Titanium', color: 0xaeb4bd },
-
     ],
   },
   {
@@ -232,10 +202,7 @@ const PLANETS = [
     resources: [
       { name: 'Gold', color: 0xe0b23c },
       { name: 'Titanium', color: 0xaeb4bd },
-
-
     ],
-
   },
   {
     id: 'titan',
@@ -254,7 +221,6 @@ const PLANETS = [
     resources: [
       { name: 'Uranium', color: 0x8fff6b },
       { name: 'Gold', color: 0xe0b23c },
-
     ],
   },
 ];
@@ -267,7 +233,6 @@ const DEEP_SPACE = {
   fogNear: 800,
   fogFar: 4200,
   gravity: -0.15,
-
 };
 
 const NO_GROUND_HEIGHT = -5000;
@@ -282,7 +247,6 @@ const SPACE_GRAVITY_STRENGTH = 18000;
 const MAX_SPACE_GRAVITY = 7.5;
 const SPACE_PLANET_MIN_RADIUS = 34;
 const SPACE_PLANET_MAX_RADIUS = 130;
-
 
 class World {
   constructor(scene) {
@@ -301,20 +265,17 @@ class World {
     this._buildAllPlanets();
     this._buildSpaceBodies();
 
-    
-
     this.scene.background = this._bgColor;
     this.scene.fog = new THREE.Fog(this._fogColor, this.currentPlanet.fogNear, this.currentPlanet.fogFar);
     this._showSurfaceOnly(this.surfacePlanet);
     this.placeSurfaceAround(0, 0, true);
-
   }
 
   _buildLighting() {
     const ambient = new THREE.HemisphereLight(0xbfe0ff, 0x3a4a2f, 0.7);
     this.scene.add(ambient);
 
-    const sun = new THREE.DirectionLight(0xfff4dd, 1.4);
+    const sun = new THREE.DirectionalLight(0xfff4dd, 1.4);
     sun.position.set(60, 90, 40);
     sun.castShadow = true;
     sun.shadow.camera.left = -120;
@@ -327,8 +288,6 @@ class World {
     sun.shadow.bias = -0.0005;
     this.scene.add(sun);
     this.sun = sun;
-
-
   }
 
   _buildStarfield() {
@@ -336,19 +295,123 @@ class World {
     const positions = new Float32Array(starCount * 3);
     const radius = 9000;
 
+    for (let i = 0; i < starCount; i++) {
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
+      positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
+      positions[i * 3 + 2] = radius * Math.cos(phi);
+    }
+
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const material = new THREE.PointsMaterial({ color: 0xffffff, size: 2.1, sizeAttenuation: false, transparent: true, opacity: 0 });
+    this.starfield = new THREE.Points(geometry, material);
+    this.starfield.visible = false;
+    this.scene.add(this.starfield);
   }
 
-  for (let i = 0; i < startCount; i++) {
-    const theta = Math.random() * Math.PI * 2;
-    const phi = Math.acos(2 * Math.random() - 1);
-    positions[i * 3] = radius * Math.sin(phi) * Math.cs(theta);
-    positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
-    positions[i * 3 + 2] = radius * Math.cos(phi);
+  _buildAllPlanets() {
+    for (const planet of this.planets) {
+      this._buildPlanetTerrain(planet);
+      if (planet.terrainType !== 'platform') {
+        this._scatterRocks(planet);
+      }
+      if (planet.backdrop) {
+        this._buildBackdrop(planet);
+
+      }
+    }
   }
 
-  const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute('position')
+  _buildPlanetTerrain(planet) {
+    const siZe = planet.terrainType === 'platform' ? 420 : Math.max(SURFACE_PATCH_SIZE, planet.groundRadius * 3.2);
+    const segments = planet.terrainType === 'platform' ? 44 : SURFACE_PATCH_SEGMENTS;
+    const geometry = new THREE.PlanetGeometry(size, size, segments, segments);
+    geometry.rotateX(-Math.PI / 2);
 
+    constmaterial = new THREE.MeshStandardMaterial({
+      color: planet.terrainColor,
+      flatShading: true,
+      roughness: planet.terrainType === 'platform' ? 0.6 : 1.0,
+      metalness: planet.terrainType === 'platform' ? 0.4 : 0.0,
 
+    });
+
+    const terrain = new THREE.Mesh(geometry, material);
+    terrain.receiveShadow = true;
+    terrain.visible = false;
+    this.scene.add(terrain);
+
+    planet._terrainMesh = terrain;
+    planet._surfaceSize = size;
+    planet._surfaceCenter = new THREE.Vector2(0, 0);
+    this._fillTerrainMesh(planet, 0, 0);
+
+  }
+
+  _fillTerrainMesh(planet, centerX, centerZ) {
+    const terrain = planet._terrainMesh;
+    if (!terrain) return;
+
+    const position = terrain.geometry.attributes.position;
+    for (let i=0; i < position.count; i++) {
+      const worldX = centerX + position.getX(i);
+      const worldZ = centerZ + position.getZ(i);
+      position.setY(i, this._computeLocalHeight(planet, worldX, worldZ));
+
+    }
+
+    position.needsUpdate = true;
+    terrain.geometry.computeVerttextNormals();
+    terrain.position.set(centerX, 0, centerZ);
+    planet._surfaceCenter.set(centerX, centerZ);
+    this._placeRocks(planet, centerX, centerZ);
+
+  }
+  _computeLocalHeight(planet, lx, lz) {
+    const amp = planet.amplitude;
+
+    switch (planet.terrainType) {
+      case 'rolling':
+        return (
+          Math.sin(lx * 0.04) * 2.2 * amp +
+          Math.cos(lz * 0.05) * 2.0 * amp +
+          Math.sin((lx + lz) * 0.02) * 1.5 * amp
+        );
+
+      case 'cratered': {
+        const base = Math.sin(lx * 0.03) * 1.0 * amp + Math.cos(lz * 0.035) * 0.8 * amp;
+        const craterDips = -Math.abs(Math.sin(lx * 0.09) * Math.cos(lz * 0.11)) * 3 * amp;
+        return base + craterDips;
+
+      }
+
+      case 'dunes':
+        return (
+          Math.abs(Math.sin(lx * 0.02)) * 2.2 * amp +
+          Math.cos(l * 0.018) * 1.6 * amp +
+          Math.sin((lx - lz) * 0.01) * 1.2 * amp
+        );
+
+      case 'cracked':
+          return (
+            Math.sin(lx * 0.18) * 0.6 * amp +
+            Math.cos(lz * 0.21) * 0.6 * amp +
+            Math.sin((lx + lz) * 0.25) * 0.4 * amp
+          );
+
+      case 'field':
+            return (
+              Math.sin(lx * 0.06) * 1.5 * amp +
+              Math.cos(lz * 0.08) * 1.3 * amp +
+              Math.sin(lx * 0.11 + lz * 0.13) * 1.0 * amp +
+              Math.cos(lx * 0.19 - lz * 0.05) * 0.8 * amp
+            );
+
+      case 'platform';
+       
+    }
+  }
 
 }
