@@ -318,6 +318,37 @@ class World {
     sun.position.set(60, 90, 40);
     sun.castShadow = true;
     sun.shadow.camera.left = -120;
-    sun.shadow
+    sun.shadow.camera.right = 120;
+    sun.shadow.camera.top = 120;
+    sun.shadow.camera.bottom = -120;
+    sun.shadow.camera.near = 1;
+    sun.shadow.camera.far = 450;
+    sun.shadow.mapSize.set(2048, 2048);
+    sun.shadow.bias = -0.0005;
+    this.scene.add(sun);
+    this.sun = sun;
+
+
   }
+
+  _buildStarfield() {
+    const starCount = 5000;
+    const positions = new Float32Array(starCount * 3);
+    const radius = 9000;
+
+  }
+
+  for (let i = 0; i < startCount; i++) {
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2 * Math.random() - 1);
+    positions[i * 3] = radius * Math.sin(phi) * Math.cs(theta);
+    positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
+    positions[i * 3 + 2] = radius * Math.cos(phi);
+  }
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position')
+
+
+
 }
