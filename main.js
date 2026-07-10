@@ -491,6 +491,66 @@ class World {
     planet._backdropGroup = group;
   }
 
+  _buildSpaceBodies() {
+    for (const planet of this.planets) {
+      const group = new THREE.Group();
+      const radius = this._bodyRadius(planet);
+      const bodyColor = planet.backdrop ? planet.backdrop.color : planet.terrainColor;
+      const sphere = new THREE.Mesh(
+        new THREE.SphereGeometry(radius, 32, 18),
+        new THREE.MeshStandardMaterial({ color: bodyColor, flatShading: true, roughness: 0.95, emissive: bodyColor, emissiveIntensity: 0.04 })
+
+      );
+      sphere.castShadow = true;
+      sphere.receiveShadow = true;
+      group.add(sphere);
+
+
+      if (planet.id == 'earth' || planet.id === 'mars' || planet.id === 'titan') {
+        const atmosphere = new THREE.Mesh(
+          new THREE.SphereGeometry(radius * 1.08, 32, 18),
+          new THREE.MeshBasicMaterial({ color: planet.skyColor, transparent: true, opacity: planet.id === 'earth' ? 0.22 : 0.14, side: THREE.Backside })
+
+        );
+        group.add(atmosphere);
+
+      }
+
+      if (planet.id === 'saturn-orbit' || planet.backdrop?.type === 'ringedGiant') {
+        const ring = new THREE.Mesh(
+          new THREE.RingGeometry(radius * 1.45, radius * 2.2, 48),
+          new THREE.MeshStandardMaterial({ color: 0xcbb98a, side: THREE.DoubleSide, transparent: true, opacity: 0.82, roughness: 1 })
+        );
+        ring.rotation.x = Math.PI / 2.7;
+        group.add(ring);
+
+      }
+
+      group.position.copy(this._spacePositionFor(planet));
+      group.visible = false;
+      this.scene.add(group);
+      planet._spaceGroup = group;
+      planet._bodyRadius = radius;
+
+    }
+  }
+
+
+  _spacePositionFor(planet) {
+    if (planet._bodyRadius) return planet._bodyRadius;
+    if (planet.backdrop) return SPACE_PLANET_MAX_RADIUS;
+    return Math.max(SPACE_PLANET_MIN_RADIUS, Math.min(SPACE_PLANET_MAX_RADIUS, planet.groundRadius * 0.46));
+
+  }
+
+  _atmosphereHeight(planet) {
+    if (planet.id === 'earth') return ATMOSPHERE_EXIT_HEIGHT;
+    if (planet.id === 'mars') return 190;
+    if (planet.id === 'titan') return 170;
+    if (planet.terrainType === 'platform') return 95;
+    return 120;
+  }
+
   
 
 
