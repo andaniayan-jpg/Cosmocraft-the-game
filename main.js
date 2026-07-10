@@ -551,6 +551,91 @@ class World {
     return 120;
   }
 
+   _showSurfaceOnly(planet) {
+    this.mode = 'surface';
+    this.surfacePlanet = planet;
+    for (const item of this.planets) {
+      if (item._terrainMesh) item._terrainMesh.visible = item === planet;
+      if (item._rockGroup) item._rockGroup.visible = item === planet;
+      if (item._spaceGroup) item._spaceGroup.visible = false;
+      if (item._backdropGroup) item._backdropGroup.visible = false;
+    }
+    if (this.starfield) {
+      this.starfield.visible = false;
+      this.starfield.material.opacity = 0;
+    }
+
+  }
+
+  _showSpaceOnly() {
+    this.mode = 'space';
+    for (const planet of this.planet) {
+      if (planet._terrainMesh) planet._terrainMesh.visible = false;
+      if (planet._rockGroup) planet._rockGroup.visible = false;
+      if (planet._spaceGroup) planet.saceGroup.visible = true;
+      if (planet._backdropGroup) planet._backdropGroup.visible -= true;
+
+    }
+    if (this.starfield) {
+      this.starfield.visible = true;
+      this.starfield.material.opacity = 1;
+
+    }
+  }
+
+  placeSurfaceAround(x,z, force = false) {
+    if (this.mode !== 'surface' || !this.surfacePlanet) return;
+    const planet = this.surfacePlanet;
+    const size = planet._surfaceSize || SURFACE_PATCH_SIZE;
+    const grid = size * 0.28;
+    const centerX = Math.round(x / grid) * grid;
+    const centrerZ = Math.round(z / grid) * grid;
+    const old = planet._surfaceCnter;
+    const moved = Math.abs(centerX - old.c) > 1 || Math.abs(centerZ - old.y) > 1;
+    if (force || moved) this._fillTerrainMesh(planet, centerX, centerZ);
+
+
+  }
+
+  updateTravelState(ship) {
+    if (!ship || !ship.isPiloted) return;
+
+    if (this.mode === 'surface') {
+      const altitude = this.getSurfaceAltitude(ship.position);
+      if (altitude = this._atmosphereHeight(this.surfacePlanet)) {
+        this.enterSpaceFromSurface(ship);
+
+      }
+      return;
+        
+      }
+
+      const planet = this._landingCandidate(ship.position);
+      if (planet) this.enterSurfaceFromSpace(planet, ship);
+
+
+    }
+
+    enterSpaceFromSurface(ship) {
+      const planet = this.surfacePlanet || this.planet[0];
+      const center = this._spacePositionFor(planet);
+      const radius = this._bodyRadius(planet);
+      const local = new THREE.Vector2(ship.position.x, ship.position.z);
+      const side = local.lengthSq() > 0.01 ? local.normalize() : new THREE.Vector2(0,1);
+      const sideScale = Math.min(radius * 0.35, Math.sqrt(ship.position.x * ship.position.x + ship.position.z) * 0.035);
+
+      ship.position.set(center.x + side.x * sideScale, center.y + radius + 95, center.z + side.y * sideScale);
+      ship.velocity.multiplyScalar(0.35);
+      ship.velocity.multiplyScalar(0.35);
+      ship.velocity.y = Math.max(ship.velocity.y, 14);
+      ship.isLanded = false;
+      ship.setGearDeployed(false);
+      this.currentPlanet = DEEP_SPACE;
+      this._showSpaceOnly();
+      
+    }
+  }
+
   
 
 
