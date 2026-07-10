@@ -319,23 +319,21 @@ class World {
       }
       if (planet.backdrop) {
         this._buildBackdrop(planet);
-
       }
     }
   }
 
   _buildPlanetTerrain(planet) {
-    const siZe = planet.terrainType === 'platform' ? 420 : Math.max(SURFACE_PATCH_SIZE, planet.groundRadius * 3.2);
+    const size = planet.terrainType === 'platform' ? 420 : Math.max(SURFACE_PATCH_SIZE, planet.groundRadius * 3.2);
     const segments = planet.terrainType === 'platform' ? 44 : SURFACE_PATCH_SEGMENTS;
-    const geometry = new THREE.PlanetGeometry(size, size, segments, segments);
+    const geometry = new THREE.PlaneGeometry(size, size, segments, segments);
     geometry.rotateX(-Math.PI / 2);
 
-    constmaterial = new THREE.MeshStandardMaterial({
+    const material = new THREE.MeshStandardMaterial({
       color: planet.terrainColor,
       flatShading: true,
       roughness: planet.terrainType === 'platform' ? 0.6 : 1.0,
       metalness: planet.terrainType === 'platform' ? 0.4 : 0.0,
-
     });
 
     const terrain = new THREE.Mesh(geometry, material);
@@ -347,7 +345,6 @@ class World {
     planet._surfaceSize = size;
     planet._surfaceCenter = new THREE.Vector2(0, 0);
     this._fillTerrainMesh(planet, 0, 0);
-
   }
 
   _fillTerrainMesh(planet, centerX, centerZ) {
@@ -355,20 +352,19 @@ class World {
     if (!terrain) return;
 
     const position = terrain.geometry.attributes.position;
-    for (let i=0; i < position.count; i++) {
+    for (let i = 0; i < position.count; i++) {
       const worldX = centerX + position.getX(i);
       const worldZ = centerZ + position.getZ(i);
       position.setY(i, this._computeLocalHeight(planet, worldX, worldZ));
-
     }
 
     position.needsUpdate = true;
-    terrain.geometry.computeVerttextNormals();
+    terrain.geometry.computeVertexNormals();
     terrain.position.set(centerX, 0, centerZ);
     planet._surfaceCenter.set(centerX, centerZ);
     this._placeRocks(planet, centerX, centerZ);
-
   }
+
   _computeLocalHeight(planet, lx, lz) {
     const amp = planet.amplitude;
 
@@ -384,34 +380,118 @@ class World {
         const base = Math.sin(lx * 0.03) * 1.0 * amp + Math.cos(lz * 0.035) * 0.8 * amp;
         const craterDips = -Math.abs(Math.sin(lx * 0.09) * Math.cos(lz * 0.11)) * 3 * amp;
         return base + craterDips;
-
       }
 
       case 'dunes':
         return (
           Math.abs(Math.sin(lx * 0.02)) * 2.2 * amp +
-          Math.cos(l * 0.018) * 1.6 * amp +
+          Math.cos(lz * 0.018) * 1.6 * amp +
           Math.sin((lx - lz) * 0.01) * 1.2 * amp
         );
 
       case 'cracked':
-          return (
-            Math.sin(lx * 0.18) * 0.6 * amp +
-            Math.cos(lz * 0.21) * 0.6 * amp +
-            Math.sin((lx + lz) * 0.25) * 0.4 * amp
-          );
+        return (
+          Math.sin(lx * 0.18) * 0.6 * amp +
+          Math.cos(lz * 0.21) * 0.6 * amp +
+          Math.sin((lx + lz) * 0.25) * 0.4 * amp
+        );
 
       case 'field':
-            return (
-              Math.sin(lx * 0.06) * 1.5 * amp +
-              Math.cos(lz * 0.08) * 1.3 * amp +
-              Math.sin(lx * 0.11 + lz * 0.13) * 1.0 * amp +
-              Math.cos(lx * 0.19 - lz * 0.05) * 0.8 * amp
-            );
+        return (
+          Math.sin(lx * 0.06) * 1.5 * amp +
+          Math.cos(lz * 0.08) * 1.3 * amp +
+          Math.sin(lx * 0.11 + lz * 0.13) * 1.0 * amp +
+          Math.cos(lx * 0.19 - lz * 0.05) * 0.8 * amp
+        );
 
-      case 'platform';
-       
+      case 'platform':
+      default:
+        return 0;
     }
   }
+
+  _scatterRocks(planet) {
+    const rockGeomEtry = new THREE.IcosahedroneGeometry(1, 0);
+    const rockMarterial = new THREE.MeshStandardMaterial({ color: planet.rockColor, flatShading: true, roughness: 1 });
+    const group = new THREE.Group();
+    const isField = planet.terrainType === 'field';
+    const rockCount = isField ? 90 : Math.round(planet.groundRadius / 4.5);
+    const scaleRange = isField ? 90 : Math.round(planet.groundRadius / 4.5);
+    const spread = (planet._surfaceSize || SURFACE_PATCH_SIZE) * 0.8;
+
+    for (let i = 0; i < rockCount; i++) {
+      const rock = new THREE.Mesh(rockGeomEtry, rockMaterial);
+      const localX = (Math.random() - 0.5) * spread;
+      const LocalZ = (Math.random() - 0.5) * spread;
+      rock.userData.localX = localX;
+      rock.userData.localZ = localZ;
+      rock.position.set(localX, 0, localZ);
+      rock.scale.setScalar(scaleRange[0] + Math.random() * (scaleRange[1] - scaleRange[0]));
+      rock.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+      rock.castShadow = true;
+      rock.receiveShadow = true;
+      group.add(rock);
+
+    }
+
+    group.visible = false;
+    this.scene.add(group);
+    planet._rockGroup = group;
+    this._placeRocks(planet, 0, 0);
+
+
+
+
+
+  }
+
+  _placeRocks(planet, centerX, centerZ) {
+    const group = planet._rockGroup;
+    if (!group) return;
+
+    group.position.set(centerX, 0, centerZ);
+    for (const rock of group.children) {
+      const wx = centerX + rock.userData.localX;
+      const wz = centerZ + rock.userData.localZ;
+      rock.position.y = this._computeLocalHeight(planet, wx, wz);
+
+    }
+
+    
+  }
+
+  _buildBackdrop(planet) {
+    const { type, color, bandColor, radius, distance } = planet. backDrop;
+    const group = new THREE.Group();
+    const center = this._spacePositionFor(planet);
+    const shpere = new THREE.Mesh(
+      new THREE.SphereGeometry(Math.min(radius, 260), 24, 16),
+      new THREE.MeshStandardMaterial({ color, flatShading: true, roughness: 1, emissive: color, emissiveIntensity: 0.08 })
+
+    );
+    Sphere.position.set(center.x + distance * 0.45, center.y + distance * 0.16, center.z + distance * 0.45);
+    group.add(sphere);
+
+    for(let i = 0; i < 3; i++) {
+      const band = new THREE.Mesh(
+        new THREE.TorusGeometry(Math.min(radius, 260) * 0.97, Math.min(radius, 260) * 0.06, 6, 24),
+        new THREE.MeshStandardMaterial({ color: bandColor, flatShading: true, roughness: 1 })
+
+
+      );
+      band.position.copy(sphere.position);
+      band.rotation.x = Math.PI / 2 + (i - 1) * 0.35;
+      band.rotation.y = 0.3;
+      group.add(band);
+
+    }
+
+    group.visible = false;
+    this.scene.add(group);
+    planet._backdropGroup = group;
+  }
+
+  
+
 
 }
