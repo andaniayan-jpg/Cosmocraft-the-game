@@ -26,5 +26,21 @@ Cosmocraft is an exploration game where player can travel through space, land on
 
 - Look for the shiny element, and press F to collect the!
 
-![alt text](image.png)
+<img width="1795" height="956" alt="Screenshot 2026-07-11 172016" src="https://github.com/user-attachments/assets/881a8906-4ff1-4500-b6f2-7d275762e196" /> <img width="1587" height="851" alt="image" src="https://github.com/user-attachments/assets/02e55075-93b8-488d-a3b1-c4c69787c4dd" />
+<img width="1397" height="947" alt="image" src="https://github.com/user-attachments/assets/a75e88b2-add6-4933-97ef-ece5690cb7ed" />
+
+
+
+
+<img width="1810" height="1007" alt="image" src="https://github.com/user-attachments/assets/c9806d93-f0c3-4548-a8a8-c03306d7ce9c" />
+<img width="1826" height="1007" alt="image" src="https://github.com/user-attachments/assets/76754df9-439a-4778-96d6-d01fa536a648" />4
+<img width="1687" height="955" alt="image" src="https://github.com/user-attachments/assets/22ef2997-a0f8-4d33-a943-d42df34a5151" />
+
+
+
+
+
+
+
+
 
