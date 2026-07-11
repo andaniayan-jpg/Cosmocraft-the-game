@@ -5,6 +5,8 @@
   
 Cosmocraft is an exploration game where player can travel through space, land on planets. They can mine, build, and craft of any planet according to their resources. 
 
+**AI was used for functions and domain and names and to make the objects in THREEE.JS. But the logic, maths and features are my own work**
+
 
 
 # Why making Cosmocraft ?
