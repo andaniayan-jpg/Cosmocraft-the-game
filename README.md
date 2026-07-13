@@ -3,7 +3,7 @@
 <img width="1774" height="887" alt="798a6e46-7e89-4b7d-adce-788e77865f80-Photoroom" src="https://github.com/user-attachments/assets/2f50866d-3259-495f-bfd7-1c9a24c26ace" />
 
   
-Cosmocraft is an exploration game where player can travel through space, land on planets. They can mine, build, and craft of any planet according to their resources. 
+Cosmocraft is a project for #horizons, it is an exploration game where player can travel through space, land on planets. They can mine, build, and craft of any planet according to their resources. 
 
 **AI was used for functions and domain and names and to make the objects in THREEE.JS. But the logic, maths and features are my own work**
 
